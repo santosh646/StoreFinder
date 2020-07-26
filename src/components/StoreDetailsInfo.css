@@ -1,0 +1,11 @@
+.storeName{
+    font-weight: 600;
+    color: #00893f !important;
+}
+.storeDivider{
+    position: relative;
+    font-size: .9em;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 20px;
+    margin-bottom: 16px;
+}

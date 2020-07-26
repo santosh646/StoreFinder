@@ -1,0 +1,7 @@
+{
+  "name": "storefinder",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
