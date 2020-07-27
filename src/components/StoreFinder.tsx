@@ -27,6 +27,7 @@ const StoreFinder: React.FC = () => {
   const history = useHistory();
   const [selected, setSelected] = useState({} as any);
   const [nearStore, setnearStore] = useState([] as any);
+  const [apiError, setapiError] = useState([] as any);
   const [defaultCenter, setdefaultCenter] = useState({
     lat: 51.063202,
     lng: -1.308,
@@ -77,7 +78,16 @@ const StoreFinder: React.FC = () => {
         let centrelatlong = { lat: latLong[0], lng: latLong[1] };
         setdefaultCenter(centrelatlong);
         getStores(latLong);
-      });
+      })
+      .catch(err => {
+        if (err.response) {
+          setapiError(err.response);
+        } else if (err.request) {
+          setapiError(err.request);
+        } else {
+          setapiError(err);
+        }
+    })
     }
     const getStores = (latLong: string[]): any => {
       let url =
@@ -91,9 +101,20 @@ const StoreFinder: React.FC = () => {
         "&offset=0&storeformat=supermarket";
       axios.get(url).then((response) => {
         setstoreData(response.data.stores);
-      });
+      })
+      .catch(err => {
+        if (err.response) {
+          setapiError(err.response);
+        } else if (err.request) {
+          setapiError(err.request);
+        } else {
+          setapiError(err);
+        }
+      })
     };
   };
+
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -125,6 +146,7 @@ const StoreFinder: React.FC = () => {
   return (
     <div className="container">
       <IonLabel className="validateError">{validateError}</IonLabel>
+      <IonLabel className="apiError">{apiError}</IonLabel>
       <IonSearchbar
         value={searchText}
         onIonInput={(e: any) => setSearchText(e.target.value)}
