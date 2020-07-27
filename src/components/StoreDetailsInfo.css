@@ -1,6 +1,7 @@
 .storeName{
     font-weight: 600;
     color: #00893f !important;
+    float:left;
 }
 .storeDivider{
     position: relative;
@@ -8,4 +9,10 @@
     border-bottom: 1px solid #eee;
     padding-bottom: 20px;
     margin-bottom: 16px;
+}
+.backButton{
+      color: #00893f !important;
+}
+.postcode{
+    font-size: 12px;
 }

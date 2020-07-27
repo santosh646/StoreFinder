@@ -1,23 +1,41 @@
-import React from "react";
-import {IonGrid, IonRow, IonCol } from "@ionic/react";
+import React, { useEffect, useState } from "react";
+import { IonLabel, IonItem } from "@ionic/react";
+import firebase from "firebase";
 
-export const NearestStore = ({ nearestStore }: any) => {
-//   const [storeName, setStoreName] = React.useState(nearestStore.nearestStore);
-//   const [postCode, setPostcode] = React.useState(nearestStore.postCode);
-//   const [accountId, setAccountId] = React.useState(nearestStore.accountId);
+export const NearestStore = () => {
+  const [nearestStore, setnearestStore] = useState([] as any);
+  useEffect(() => {
+    const fetchData = async () => {
+      const db = firebase.firestore();
+      const data = await db.collection("nearestStore").get();
+      setnearestStore(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    };
+    fetchData();
+  }, []);
   return (
     <div>
-      <IonGrid>
-        <IonRow>
-          <IonCol>Account ID:{nearestStore.accountId}</IonCol>
-        </IonRow>
-        <IonRow>
-          <IonCol>Store Name:{nearestStore.storeName}</IonCol>
-        </IonRow>
-        <IonRow>
-          <IonCol>Post Code:{nearestStore.postCode}</IonCol>
-        </IonRow>
-      </IonGrid>
+      <div>
+        <h2 className="nearStoreHeader">Nearest Store Details</h2>
+        <ul>
+          {nearestStore.map((nearestStore: any) => (
+            <div key={nearestStore.id} className="nearStoreDetails">
+              <IonItem>
+                <IonLabel>
+                  {" "}
+                  {nearestStore.nearestStore}
+                </IonLabel>
+
+                <IonItem>
+                  <IonLabel>
+                    {" "}
+                    {nearestStore.postCode}
+                  </IonLabel>
+                </IonItem>
+              </IonItem>
+            </div>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };

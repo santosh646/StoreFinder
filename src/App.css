@@ -1,0 +1,20 @@
+.toolBar{
+    background-color: #00893f;
+}
+a.button-native{
+    color:#ffffff !important;
+    font-size:20px !important;
+}
+ul li{
+    list-style-type: none;
+}
+#tab-button-near,#tab-button-home{
+    color:#ffffff;
+    opacity:0.7;
+    font-size:18px;
+}
+.tab-selected{
+    color:#ffffff;
+    opacity:1 !important;
+    font-size:18px;
+}
