@@ -20,16 +20,9 @@ export const NearestStore = () => {
           {nearestStore.map((nearestStore: any) => (
             <div key={nearestStore.id} className="nearStoreDetails">
               <IonItem>
-                <IonLabel>
-                  {" "}
-                  {nearestStore.nearestStore}
-                </IonLabel>
-
+                <IonLabel>{nearestStore.nearestStore}</IonLabel>
                 <IonItem>
-                  <IonLabel>
-                    {" "}
-                    {nearestStore.postCode}
-                  </IonLabel>
+                  <IonLabel>{nearestStore.postCode}</IonLabel>
                 </IonItem>
               </IonItem>
             </div>

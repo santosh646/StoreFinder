@@ -18,6 +18,7 @@ import {
   InfoWindow,
 } from "@react-google-maps/api";
 import uid from "uid";
+import * as copy from "../utilities/constants";
 
 const StoreFinder: React.FC = () => {
   const [searchText, setSearchText] = useState("");
@@ -53,8 +54,8 @@ const StoreFinder: React.FC = () => {
     if (searchTerm === "") {
       setValidateError("Please Enter Search Postcode or Address");
     } else {
-      var searchCountry = "UK";
-      var searchQuery = encodeURIComponent(searchTerm.replace(" ", ""));
+      let searchCountry = "UK";
+      let searchQuery = encodeURIComponent(searchTerm.replace(" ", ""));
       if (
         searchQuery.toLowerCase() === "gibraltar" ||
         searchQuery.toLowerCase() === "gx11 1aa" ||
@@ -62,14 +63,14 @@ const StoreFinder: React.FC = () => {
       ) {
         searchCountry = "GI";
       }
-      var url =
-        "https://dev.virtualearth.net/REST/v1/Locations?query=" +
+      let url =
+        copy.bingMapUrl +
         encodeURIComponent(searchTerm) +
         "," +
         searchCountry +
         "&output=json&key=" +
-        "AlOkrbwwv3dnla6PXW82LiolGDeOzIP6qyFIX5C95HFBcWkAId5HRFfN1ORuK5y5";
-      axios.get(url).then(function (response) {
+        copy.bingMapApiKey;
+      axios.get(url).then((response) => {
         let latLong =
           response.data.resourceSets[0].resources[0].geocodePoints[0]
             .coordinates;
@@ -79,14 +80,16 @@ const StoreFinder: React.FC = () => {
       });
     }
     const getStores = (latLong: string[]): any => {
-      var url =
-        "https://api.morrisons.com/location/v2//stores?apikey=kxBdM2chFwZjNvG2PwnSn3sj6C53dLEY&distance=50000&lat=" +
+      let url =
+        copy.morrisonsApiUrl +
+        "?apikey=" +
+        copy.morissonsApiKey +
+        "&distance=50000&lat=" +
         latLong[0] +
         "&limit=10&lon=" +
         latLong[1] +
         "&offset=0&storeformat=supermarket";
-      axios.get(url).then(function (response) {
-        console.log(response);
+      axios.get(url).then((response) => {
         setstoreData(response.data.stores);
       });
     };
@@ -106,12 +109,12 @@ const StoreFinder: React.FC = () => {
     if (storeData.length > 0) {
       let postCode = storeData[0].address.postcode;
       let nearestStore = storeData[0].storeName;
-      let accountid=uid();
+      let accountid = uid();
       db.collection("nearestStore").add({
         accountId: accountid,
         postCode: postCode,
         nearestStore: nearestStore,
-      });     
+      });
       history.push("/nearMe");
     } else {
       setValidateError(
@@ -121,7 +124,7 @@ const StoreFinder: React.FC = () => {
   };
   return (
     <div className="container">
-       <IonLabel className="validateError">{validateError}</IonLabel>
+      <IonLabel className="validateError">{validateError}</IonLabel>
       <IonSearchbar
         value={searchText}
         onIonInput={(e: any) => setSearchText(e.target.value)}
@@ -132,8 +135,8 @@ const StoreFinder: React.FC = () => {
       <IonButton className="customButtons" onClick={(e) => onCreate()}>
         Nearest Store Save
       </IonButton>
-     
-      <LoadScript googleMapsApiKey="AIzaSyB8EBao-RrR2aJmvSM9Bpk1JD8MMCm998I">
+
+      <LoadScript googleMapsApiKey={copy.googleMapsApiKey}>
         <GoogleMap
           mapContainerStyle={mapStyles}
           zoom={10}
@@ -164,42 +167,38 @@ const StoreFinder: React.FC = () => {
           )}
         </GoogleMap>
       </LoadScript>
-      
+
       <div className="scroll">
-        {storeData.map((store: any) => (          		  
-		  <IonGrid key={store.storeName}>
-      <IonRow>
-        <IonCol>
-          <IonLabel className="storeName">
-            {store.storeName} - {store.address.addressLine1}
-          </IonLabel>
-        </IonCol>
-      </IonRow>
-      <IonRow>
-            {store.address.addressLine2}
-            {store.address.city}
-      </IonRow>
-      <IonRow>
-            {store.address.postcode}
-      </IonRow>
-      <IonRow>
-            {store.distance / 1609.34}miles
-      </IonRow>
-      <IonRow className="storeDivider">
-       <IonButton
-              className="customButtons"
-              onClick={() => viewStore(store)}
-            >
-              View Store
-            </IonButton>
-            <IonButton
-              className="customButtons"
-              onClick={() => viewDirections()}
-            >
-              Directions
-            </IonButton>
+        {storeData.map((store: any) => (
+          <IonGrid key={store.storeName}>
+            <IonRow>
+              <IonCol>
+                <IonLabel className="storeName">
+                  {store.storeName} - {store.address.addressLine1}
+                </IonLabel>
+              </IonCol>
             </IonRow>
-    </IonGrid>
+            <IonRow>
+              {store.address.addressLine2}
+              {store.address.city}
+            </IonRow>
+            <IonRow>{store.address.postcode}</IonRow>
+            <IonRow>{store.distance / 1609.34}miles</IonRow>
+            <IonRow className="storeDivider">
+              <IonButton
+                className="customButtons"
+                onClick={() => viewStore(store)}
+              >
+                View Store
+              </IonButton>
+              <IonButton
+                className="customButtons"
+                onClick={() => viewDirections()}
+              >
+                Directions
+              </IonButton>
+            </IonRow>
+          </IonGrid>
         ))}
       </div>
     </div>
